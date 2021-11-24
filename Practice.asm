@@ -1,0 +1,3 @@
+    .text
+    .glob main
+    adkabdsk
