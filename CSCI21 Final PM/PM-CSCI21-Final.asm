@@ -1,19 +1,18 @@
-# Final Exam : Question No1.
-# Name : Phillip Mai
+# Final Exam: Question 1
+# Name: Phillip Mai
 #
 #
 
-  .data
+    .data
 
-  .text
-  .globl  main
+    .text
+    .globl  main
 main:
-
 
 
 loop:
 
 
 done:
-  li  $v0, 10   # Code 10 for exit
-  syscall    # End program
+    li  $v0, 10     # Code 10 for exit
+    syscall         # End program
