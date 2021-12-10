@@ -13,14 +13,14 @@
     .globl  main
 
 main:
-    lw  $t9, 100        # $t9 = Number of digits(3), hundred for 3 digits
-    lui $t0, 0xffff     # load upper immediate
+    lw  $t9, 100                # $t9 = Number of digits(3), hundred for 3 digits
+    lui $t0, 0xffff             # load upper immediate
 wait:
-    lw      $t1, 0($t0)
-    andi    $t1, $t1, 0x0001 	# test the Receiver control register has 1 in LSB # ready?
-    beq     $t1, $zero, wait    # if LSB is 0, branch rd_wait
-    lw      $s0, 4($t0)             # if LSB is 1, read a character from I/O device
-		
+    lw      $t1, 0($t0)         # Load Receiver Control to $t1
+    andi    $t1, $t1, 0x0001    # test the Receiver control register has 1 in LSB (ready bit)
+    beq     $t1, $zero, wait    # if LSB is 0, reset wait or if LSB is 1, continnes read a character from I/O device
+    lw      $s0, 4($t0)         # Read data from Receiver Data to $s0
+
     sub     $s0, $s0, 48        # s0 = v0 - 48
     sub		$t9, $t9, 1
     beq 	$t9, $zero, read
