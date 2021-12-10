@@ -13,7 +13,7 @@
     .globl  main
 
 main:
-    lw  $t9, num        # $t9 = Number of digits(2)
+    lw  $t9, 100        # $t9 = Number of digits(3), hundred for 3 digits
     lui $t0, 0xffff     # load upper immediate
 wait:
     lw      $t1, 0($t0)
