@@ -21,8 +21,8 @@ wait:
     beq     $t1, $zero, wait    # if LSB is 0, reset wait or if LSB is 1, continnes read a character from I/O device
     lw      $s0, 4($t0)         # Read data from Receiver Data to $s0
 
-    sub     $s0, $s0, 48        # s0 = v0 - 48
-    sub		$t9, $t9, 1
+    sub     $s0, $s0, 48        # s0 = v0 - 48 to convert from ASCII
+    mul     $s0, $s0, $t9       # Multiply $s0 by the place value factor in $t9
     beq 	$t9, $zero, read
     mul     $s1, $s0, 10        # It is the first digit among two digits
     b       wait
