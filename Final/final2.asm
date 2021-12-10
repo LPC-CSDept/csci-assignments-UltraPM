@@ -31,6 +31,16 @@ wr_wait:
 	bne	$v0, $s0, rd_wait	# branch to rd_wait if there more than ASCII code 'q'
 	
 
+# Example code to Enable all interrupts
+mfc0 	$a0, $12     	#   read from the status register     
+		ori     $a0,   0xff11    	# enable all interrupts     
+		mtc0 	$a0, $12     	# write back to the status register 
+
+# Example code to get the Exception Code
+mfc0 	$k0, $13     	#   Cause register     
+srl     	$a0, $k0, 2     	#   Extract   Exception Code Field     
+andi    	$a0, $a0, 0x1f 	#   Get the exception code  
+
 # loop:
 
 
