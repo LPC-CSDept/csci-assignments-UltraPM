@@ -11,7 +11,7 @@
     .globl  main
 
 main:
-    lw  $t9, 100                # $t9 = Number of digits(3), hundred for 3 digits
+    li  $t9, 100                # $t9 = Number of digits(3), hundred for 3 digits
     lui $t0, 0xffff             # load upper immediate
 wait:
     lw      $t1, 0($t0)         # Load Receiver Control to $t1
@@ -26,7 +26,7 @@ wait:
     bnez    $t9, wait           # Polling for next phase
 
 read:
-    add     $s1, $s1, $zero     # Copying $t9 to $s1 
+    add     $a0, $s1, $zero     # Copying $t9 to $a0 
     li      $v0, 1              # Syscall code to print input
     syscall 
 
