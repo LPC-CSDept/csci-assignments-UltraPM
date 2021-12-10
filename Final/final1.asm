@@ -28,8 +28,8 @@ wait:
     bnez    $t9, wait           # Polling for next phase
 
 read:		
-    add     $a0, $s1, $s0       # print 
-    li  $v0, 1
+    add     $a0, $s1, $zero     # Copying $t9 to $a0 
+    li      $v0, 1              # Syscall code to print input
     syscall 
 
 done:
