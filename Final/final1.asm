@@ -33,5 +33,5 @@ read:
     syscall 
 
 done:
-    li  $v0, 10     # Code 10 for exit
-    syscall         # End program
+    li  $v0, 10                 # Code 10 for exit
+    syscall                     # End program
