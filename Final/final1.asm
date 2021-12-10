@@ -23,9 +23,9 @@ wait:
 
     sub     $s0, $s0, 48        # s0 = v0 - 48 to convert from ASCII
     mul     $s0, $s0, $t9       # Multiply $s0 by the place value factor in $t9
-    beq 	$t9, $zero, read
-    mul     $s1, $s0, 10        # It is the first digit among two digits
-    b       wait
+    div     $t9, $t9, 10        # Divide $t9 to decrease place value factor to the next place
+    add     $s1, $s1, $s0       # Add current digits value to $s1
+    bnez    $t9, wait           # Polling for next phase
 
 read:		
     add     $a0, $s1, $s0       # print 
