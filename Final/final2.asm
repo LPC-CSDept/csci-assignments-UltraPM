@@ -7,21 +7,22 @@
 # I copy from Lab-MMIO2.asm & IntIO-Kernel-Lab2.asm with some changes that make it tpyed characters in a console list until close by q
 #
 
-		.kdata     #   kernel data     
-s1:     .word 10     
-s2:     .word 11    
-new_line: .asciiz     "\n"     
+    .kdata                  #   kernel data     
+s1: .word   10     
+s2: .word   11    
+new_line:   .asciiz "\n"    # newline
 		
+    .text     
+    .globl  main
+main:
+# Example code to Enable all interrupts
+    mfc0    $a0, $12        # read from the status register     
+    ori     $a0, 0xff11     # enable all interrupts     
+    mtc0    $a0, $12        # write back to the status register 
 
-		.text     
-		.globl     main     
-main:     
-		mfc0 	$a0, $12     #   read from the status register     
-		ori     $a0,   0xff11     # enable all interrupts     
-		mtc0 	$a0, $12     # write back to the status register     
-		lui     $t0, 0xFFFF     #   $t0 =   0xFFFF0000     
-		ori     $a0, $0, 2     #   enable keyboard interrupt     
-		sw     	$a0, 0($t0)     # write back to 0xFFFF0000;     Receiver Control 
+    lui     $t0, 0xFFFF     # $t0 =   0xFFFF0000     
+    ori     $a0, $0, 2      # enable keyboard interrupt     
+    sw      $a0, 0($t0)     # write back to 0xFFFF0000;     Receiver Control 
 
 here:   j here     #   stay here forever     
 		
@@ -85,12 +86,6 @@ wr_wait:
 	
 	bne	$v0, $s0, rd_wait	# branch to rd_wait if there more than ASCII code 'q'
 	
-
-# Example code to Enable all interrupts
-mfc0 	$a0, $12     	#   read from the status register     
-		ori     $a0,   0xff11    	# enable all interrupts     
-		mtc0 	$a0, $12     	# write back to the status register 
-
 # Example code to get the Exception Code
 mfc0 	$k0, $13     	#   Cause register     
 srl     	$a0, $k0, 2     	#   Extract   Exception Code Field     
