@@ -18,7 +18,7 @@ main:
 wait:
     lw      $t1, 0($t0)         # Load Receiver Control to $t1
     andi    $t1, $t1, 0x0001    # test the Receiver control register has 1 in LSB (ready bit)
-    beq     $t1, $zero, wait    # if LSB is 0, reset wait or if LSB is 1, continnes read a character from I/O device
+    beqz    $t1, wait           # if LSB is 0, reset wait or if LSB is 1, continnes read a character from I/O device
     lw      $s0, 4($t0)         # Read data from Receiver Data to $s0
 
     sub     $s0, $s0, 48        # s0 = v0 - 48 to convert from ASCII
@@ -27,7 +27,7 @@ wait:
     add     $s1, $s1, $s0       # Add current digits value to $s1
     bnez    $t9, wait           # Polling for next phase
 
-read:		
+read:
     add     $a0, $s1, $zero     # Copying $t9 to $a0 
     li      $v0, 1              # Syscall code to print input
     syscall 
@@ -35,3 +35,4 @@ read:
 done:
     li  $v0, 10                 # Code 10 for exit
     syscall                     # End program
+
