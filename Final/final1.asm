@@ -7,8 +7,6 @@
 # I copy from Lab-MMIO.asm with some changes that make it enter 3 number digits
 # 
 
-    .data
-
     .text
     .globl  main
 
@@ -28,11 +26,10 @@ wait:
     bnez    $t9, wait           # Polling for next phase
 
 read:
-    add     $a0, $s1, $zero     # Copying $t9 to $a0 
+    add     $s1, $s1, $zero     # Copying $t9 to $s1 
     li      $v0, 1              # Syscall code to print input
     syscall 
 
 done:
     li  $v0, 10                 # Code 10 for exit
     syscall                     # End program
-
