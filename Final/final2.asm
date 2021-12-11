@@ -27,14 +27,13 @@ main:
 here:
 	j	here				# loop forever until 'q' to close program
 
-		# KERNEL text ******************
+# KERNEL text ******************
 		
-		.ktext  0x80000180     # kernel code starts here     
-		sw     	$v0, s1     #   We need to use these registers     
-		sw     	$a0, s2     #   not using the stack because the interrupt      
-							# might be triggered by a memory reference      
-							# using a bad value of the stack pointer  
+	.ktext	0x80000180		# kernel code starts here     
+	sw		$v0, s1			# We need to use these registers in KERNEL text
+	sw		$a0, s2			# not using the stack because the interrupt in KERNEL text
 
+# code to get the Exception Code
 		mfc0 	$k0, $13     	#   Cause register     
 		srl     $a0, $k0, 2     #   Extract   ExcCode     Field     
 		andi    $a0, $a0, 0x1f  #   Get the exception code     
