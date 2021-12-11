@@ -48,21 +48,21 @@ here:
 	lw		$a0, 4($v0)			# get the input key     
 	
 	li 		$v0,1     		#   print it here.      
-		syscall     			#   Note: interrupt routine should return very fast,     
+	syscall     			#   Note: interrupt routine should return very fast,     
 								#   doing something like print is NOT a good practice!     
-		li $v0,4     			#   print the new line     
-		la $a0,   new_line
+		li $v0,10
+  
+		la $a0,   new_line#   print the new line 
 		syscall   
 
-kdone:     
-		lw     	$v0, s1     		# Restore other registers     
-		lw     	$a0, s2     
-		mtc0 	$0, $13     	#   Clear Cause register     
-		mfc0 	$k0, $12     	# Set Status register     
-		#andi    $k0, 0xfffd  	# clear EXL bit d = 1101   
-		ori     $k0, 0x11     	#   Interrupts enabled     
-		mtc0 	$k0, $12     	#   write back to status     
-		eret    			 	# return to EPC    
+kdone:
+	lw		$v0, s1				# Restore other registers     
+	lw     	$a0, s2     
+	mtc0	$0, $13				#   Clear Cause register     
+	mfc0 	$k0, $12			# Set Status register     
+	ori		$k0, 0x11			#   Interrupts enabled     
+	mtc0	$k0, $12			#   write back to status     
+	eret						# return to EPC    
 
 
 rd_wait:
