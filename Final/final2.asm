@@ -15,6 +15,11 @@ new_line:   .asciiz "\n"    # newline
     .text     
     .globl  main
 main:
+
+	li	$s0, 100		# ASCII code for 'q' (Meaning if you press 'q' the program end)
+	lui	$t0, 0xFFFF
+
+
 # Example code to Enable all interrupts
     mfc0    $a0, $12      	  # read from the status register     
     ori     $a0, 0xff11  	   # enable all interrupts     
@@ -59,15 +64,6 @@ kdone:
 		mtc0 	$k0, $12     	#   write back to status     
 		eret    			 	# return to EPC    
 
-
-    .data
-
-    .text
-    .globl  main
-main:
-
-	li	$s0, 100		# ASCII code for 'q' (Meaning if you press 'q' the program end)
-	lui	$t0, 0xFFFF
 
 rd_wait:
 	lw	$t1, 0($t0)		# load from the input control register 
