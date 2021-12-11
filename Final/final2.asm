@@ -16,28 +16,28 @@ new_line:   .asciiz "\n"    # newline
     .globl  main
 main:
 # Example code to Enable all interrupts
-    mfc0    $a0, $12        # read from the status register     
-    ori     $a0, 0xff11     # enable all interrupts     
-    mtc0    $a0, $12        # write back to the status register 
+    mfc0    $a0, $12      	  # read from the status register     
+    ori     $a0, 0xff11  	   # enable all interrupts     
+    mtc0    $a0, $12      	  # write back to the status register 
 
-    lui     $t0, 0xFFFF     # $t0 =   0xFFFF0000     
-    ori     $a0, $0, 2      # enable keyboard interrupt     
-    sw      $a0, 0($t0)     # write back to 0xFFFF0000; store to Receiver Control to enable interrupts
+    lui     $t0, 0xFFFF   	  # $t0 =   0xFFFF0000     
+    ori     $a0, $0, 2    	  # enable keyboard interrupt     
+    sw      $a0, 0($t0)   	  # write back to 0xFFFF0000; store to Receiver Control to enable interrupts
 
 here:
-	j	here				# loop forever until 'q' to close program
+	j	here					# loop forever until 'q' to close program
 
 # KERNEL text ******************
 		
-	.ktext	0x80000180		# kernel code starts here     
-	sw		$v0, s1			# We need to use these registers in KERNEL text
-	sw		$a0, s2			# not using the stack because the interrupt in KERNEL text
+	.ktext	0x80000180			# kernel code starts here     
+	sw		$v0, s1				# We need to use these registers in KERNEL text
+	sw		$a0, s2				# not using the stack because the interrupt in KERNEL text
 
 # code to get the Exception Code
-		mfc0 	$k0, $13     	#   Cause register     
-		srl     $a0, $k0, 2     #   Extract   ExcCode     Field     
-		andi    $a0, $a0, 0x1f  #   Get the exception code     
-		bne     $a0, $zero,   kdone     # Exception Code 0 is I/O. Only processing I/O here     
+	mfc0	$k0, $13			# Cause register     
+	srl		$a0, $k0, 2			# Extract   ExcCode     Field     
+	andi	$a0, $a0, 0x1f		# Get the exception code     
+	bne		$a0, $zero, kdone	# Exception Code 0 is I/O. Only processing I/O here     
 
 		lui     $v0, 0xFFFF    	#   $v0 =   0xFFFF0000     
 		lw     	$a0, 4($v0)   # 	get the input key     
