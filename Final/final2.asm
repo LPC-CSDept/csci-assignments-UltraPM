@@ -7,9 +7,9 @@
 # I copy from Lab-MMIO2.asm & IntIO-Kernel-Lab2.asm with some changes that make it tpyed characters in a console list until close by q
 #
 
-    .kdata                  #   kernel data     
-s1: .word   10     
-s2: .word   11    
+    .kdata                  # kernel data     
+s1: .word   10
+s2: .word   11
 new_line:   .asciiz "\n"    # newline
 		
     .text     
@@ -22,7 +22,7 @@ main:
 
     lui     $t0, 0xFFFF     # $t0 =   0xFFFF0000     
     ori     $a0, $0, 2      # enable keyboard interrupt     
-    sw      $a0, 0($t0)     # write back to 0xFFFF0000;     Receiver Control 
+    sw      $a0, 0($t0)     # write back to 0xFFFF0000; store to Receiver Control to enable interrupts
 
 here:   j here     #   stay here forever     
 		
