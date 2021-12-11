@@ -55,6 +55,9 @@ here:
 	sw		$v0, 12($t0)		# output device is ready, so write
 	bne		$v0, $s0, print		# branch to rd_wait if there more than ASCII code 'q'
 
+	li	$v0, 10			#   print it here.      
+	syscall 			#   Note: interrupt routine should return very fast,     
+
 print:
 	li		$v0, 1				# Code to print it here.      
 	syscall						    
@@ -71,22 +74,3 @@ kdone:
 	ori		$k0, 0x11			#   Interrupts enabled     
 	mtc0	$k0, $12			#   write back to status     
 	eret						# return to EPC    
-
-
-rd_wait:
-	lw	$t1, 0($t0)		# load from the input control register 
-	andi	$t1, $t1, 0x0001	# reset (clear) all bits except LSB (least significant bit)
-	beq	$t1, $zero, rd_wait		# if not ready(0) restart loop, if ready(1) continue
-	lw	$v0, 4($t0)		# input device is ready, so read 
-	
-# Example code to get the Exception Code
-mfc0 	$k0, $13     	#   Cause register     
-srl     	$a0, $k0, 2     	#   Extract   Exception Code Field     
-andi    	$a0, $a0, 0x1f 	#   Get the exception code  
-
-# loop:
-
-
-done:
-    li  $v0, 10     # Code 10 for exit
-    syscall         # End program
