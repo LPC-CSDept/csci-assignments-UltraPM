@@ -54,16 +54,14 @@ here:
 	beq		$t1, $zero, print	# if not ready, then loop back
 	sw		$v0, 12($t0)		# output device is ready, so write
 	bne		$v0, $s0, print		# branch to rd_wait if there more than ASCII code 'q'
-	
 
+print:
+	li		$v0, 1				# Code to print it here.      
+	syscall						    
 
-	li 		$v0,1     		#   print it here.      
-	syscall     			#   Note: interrupt routine should return very fast,     
-								#   doing something like print is NOT a good practice!     
-		li $v0,10
-  
-		la $a0,   new_line#   print the new line 
-		syscall   
+	li		$v0, 4
+	la		$a0, new_line		# $a0 to newline then print result 
+	syscall
 
 kdone:
 	lw		$v0, s1				# Restore other registers     
