@@ -39,9 +39,10 @@ here:
 	andi	$a0, $a0, 0x1f		# Get the exception code     
 	bne		$a0, $zero, kdone	# Exception Code 0 is I/O. Only processing I/O here     
 
-		lui     $v0, 0xFFFF    	#   $v0 =   0xFFFF0000     
-		lw     	$a0, 4($v0)   # 	get the input key     
-		li 		$v0,1     		#   print it here.      
+	lui		$v0, 0xFFFF			# $v0 = 0xFFFF0000 and it memory addresss to start on MMIO
+	lw		$a0, 4($v0)			# get the input key     
+	
+	li 		$v0,1     		#   print it here.      
 		syscall     			#   Note: interrupt routine should return very fast,     
 								#   doing something like print is NOT a good practice!     
 		li $v0,4     			#   print the new line     
