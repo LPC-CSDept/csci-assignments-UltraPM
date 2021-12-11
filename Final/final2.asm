@@ -25,7 +25,7 @@ main:
     ori     $a0, 0xff11  	   # enable all interrupts     
     mtc0    $a0, $12      	  # write back to the status register 
 
-    lui     $t0, 0xFFFF   	  # $t0 =   0xFFFF0000     
+    lui     $t0, 0xFFFF   	  # $t0 = 0xFFFF0000     
     ori     $a0, $0, 2    	  # enable keyboard interrupt     
     sw      $a0, 0($t0)   	  # write back to 0xFFFF0000; store to Receiver Control to enable interrupts
 
@@ -40,7 +40,7 @@ here:
 
 # code to get the Exception Code
 	mfc0	$k0, $13			# Cause register     
-	srl		$a0, $k0, 2			# Extract   ExcCode     Field     
+	srl		$a0, $k0, 2			# Extract Exception Code Field     
 	andi	$a0, $a0, 0x1f		# Get the exception code     
 	bne		$a0, $zero, kdone	# Exception Code 0 is I/O. Only processing I/O here     
 
@@ -53,7 +53,7 @@ here:
 	andi	$t1, $t1, 0x0001	# reset all bits except (least significant bit)
 	beq		$t1, $zero, print	# if not ready, then loop back
 	sw		$v0, 12($t0)		# output device is ready, so write
-	bne		$v0, $s0, print		# branch to rd_wait if there more than ASCII code 'q'
+	bne		$v0, $s0, print		# branch to print if there more than ASCII code 'q'
 
 	li	$v0, 10			#   print it here.      
 	syscall 			#   Note: interrupt routine should return very fast,     
@@ -69,8 +69,8 @@ print:
 kdone:
 	lw		$v0, s1				# Restore other registers     
 	lw     	$a0, s2     
-	mtc0	$0, $13				#   Clear Cause register     
+	mtc0	$0, $13				# Clear Cause register     
 	mfc0 	$k0, $12			# Set Status register     
-	ori		$k0, 0x11			#   Interrupts enabled     
-	mtc0	$k0, $12			#   write back to status     
+	ori		$k0, 0x11			# Interrupts enabled     
+	mtc0	$k0, $12			# write back to status     
 	eret						# return to EPC    
