@@ -37,17 +37,22 @@ here:
 	sw		$a0, s2				# not using the stack because the interrupt in KERNEL text
 
 # code to get the Exception Code
-	mfc0	$k0, $13			# Cause register     
-	srl		$a0, $k0, 2			# Extract Exception Code Field     
-	andi	$a0, $a0, 0x1f		# Get the exception code     
-	bne		$a0, $zero, kdone	# Exception Code 0 is I/O. Only processing I/O here     
+	mfc0	$k0, $13			# Cause register 
+	srl		$a0, $k0, 2			# Extract Exception Code Field 
+	andi	$a0, $a0, 0x1f		# Get the exception code 
+	bne		$a0, $zero, kdone	# Exception Code 0 is I/O. Only processing I/O here 
 
 	lui		$v0, 0xFFFF			# $v0 = 0xFFFF0000 and it memory addresss to start on MMIO
-	lw		$a0, 4($v0)			# get the input key     
+	lw		$a0, 4($v0)			# get the input key
+	lw		$t1, 8($t0)			# load the output control register 
+	andi	$t1, $t1, 0x0001	# reset all bits except (least significant bit)
+
+	sw		$v0, 12($t0)		# output device is ready, so write
+
 	bne		$a0, $s0, print		# branch to print if there more than ASCII code 'q'
 
-	li	$v0, 10			#   print it here.      
-	syscall 			#   Note: interrupt routine should return very fast,     
+	li	$v0, 10			#   print it 
+	syscall 			#   Note: interrupt routine should return very fast, then end code section
 
 print:
 	li		$v0, 11				# Code to print it here.      
