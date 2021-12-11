@@ -46,7 +46,17 @@ here:
 
 	lui		$v0, 0xFFFF			# $v0 = 0xFFFF0000 and it memory addresss to start on MMIO
 	lw		$a0, 4($v0)			# get the input key     
+
+	bne		$a0, $s0, print		# branch to print if there more than ASCII code 'q'
+
+	lw		$t1, 8($t0)			# load the output control register 
+	andi	$t1, $t1, 0x0001	# reset all bits except (least significant bit)
+	beq		$t1, $zero, print	# if not ready, then loop back
+	sw		$v0, 12($t0)		# output device is ready, so write
+	bne		$v0, $s0, print		# branch to rd_wait if there more than ASCII code 'q'
 	
+
+
 	li 		$v0,1     		#   print it here.      
 	syscall     			#   Note: interrupt routine should return very fast,     
 								#   doing something like print is NOT a good practice!     
@@ -70,14 +80,6 @@ rd_wait:
 	andi	$t1, $t1, 0x0001	# reset (clear) all bits except LSB (least significant bit)
 	beq	$t1, $zero, rd_wait		# if not ready(0) restart loop, if ready(1) continue
 	lw	$v0, 4($t0)		# input device is ready, so read 
-	
-wr_wait:
-	lw	$t1, 8($t0)		# load the output control register 
-	andi	$t1, $t1, 0x0001	# reset all bits except (least significant bit)
-	beq	$t1, $zero, wr_wait	# if not ready, then loop back
-	sw	$v0, 12($t0)		# output device is ready, so write
-	
-	bne	$v0, $s0, rd_wait	# branch to rd_wait if there more than ASCII code 'q'
 	
 # Example code to get the Exception Code
 mfc0 	$k0, $13     	#   Cause register     
