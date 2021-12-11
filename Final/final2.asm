@@ -16,7 +16,7 @@ new_line:	.asciiz "\n"    # newline
     .globl  main
 main:
 
-	li	$s0, 100		# ASCII code for 'q' (Meaning if you press 'q' the program end)
+	li	$s0, 113		# ASCII - Binary Character Table for 'q' (Meaning if you press 'q' the program end)
 
 # Example code to Enable all interrupts
     mfc0    $a0, $12      	  # read from the status register     
@@ -58,10 +58,10 @@ print:
 	syscall
 
 kdone:
-	lw		$v0, s1				# Restore other registers     
-	lw     	$a0, s2     
-	mtc0	$0, $13				# Clear Cause register     
-	mfc0 	$k0, $12			# Set Status register     
-	ori		$k0, 0x11			# Interrupts enabled     
-	mtc0	$k0, $12			# write back to status     
-	eret						# return to EPC    
+	lw		$v0, s1				# Restore $v0 register 
+	lw     	$a0, s2				# Restore $a0 register 
+	mtc0	$0, $13				# Clear Cause register 
+	mfc0 	$k0, $12			# Set Status register 
+	ori		$k0, 0x11			# Interrupts enabled 
+	mtc0	$k0, $12			# write back to status 
+	eret						# return to EPC 
