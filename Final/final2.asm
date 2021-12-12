@@ -7,24 +7,24 @@
 # I copy from Lab-MMIO2.asm & IntIO-Kernel-Lab2.asm with some changes that make it tpyed characters in a console list until close by q
 #
 
-		.kdata                  # kernel data     
+		.kdata                  # kernel data 
 s1:		.word   10
 s2:		.word   11
 new_line:	.asciiz "\n"    # newline
 
-    .text     
-    .globl  main
+    .text
+	.globl  main
 main:
 
 	li	$s0, 113		# ASCII - Binary Character Table for 'q' (Meaning if you press 'q' the program end)
 
 # Example code to Enable all interrupts
-    mfc0    $a0, $12      	  # read from the status register     
-    ori     $a0, 0xff11  	   # enable all interrupts     
+    mfc0    $a0, $12      	  # read from the status register  
+    ori     $a0, 0xff11  	   # enable all interrupts 
     mtc0    $a0, $12      	  # write back to the status register 
 
-    lui     $t0, 0xFFFF   	  # $t0 = 0xFFFF0000     
-    ori     $a0, $0, 2    	  # enable keyboard interrupt     
+    lui     $t0, 0xFFFF   	  # $t0 = 0xFFFF0000 
+    ori     $a0, $0, 2    	  # enable keyboard interrupt 
     sw      $a0, 0($t0)   	  # write back to 0xFFFF0000; store to Receiver Control to enable interrupts
 
 here:
@@ -32,7 +32,7 @@ here:
 
 # KERNEL text ******************
 		
-	.ktext	0x80000180			# kernel code starts here     
+	.ktext	0x80000180			# kernel code starts here 
 	sw		$v0, s1				# We need to use these registers in KERNEL text
 	sw		$a0, s2				# not using the stack because the interrupt in KERNEL text
 
@@ -55,8 +55,8 @@ here:
 	syscall 			#   Note: interrupt routine should return very fast, then end code section
 
 print:
-	li		$v0, 11				# Code to print it here.      
-	syscall						    
+	li		$v0, 11				# Code to print it here 
+	syscall
 
 	li		$v0, 4
 	la		$a0, new_line		# $a0 to newline then print result 
