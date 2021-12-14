@@ -11,7 +11,7 @@
     .globl  main
 
 main:
-    li  $t9, 100                # $t9 = Number of digits(3), hundred for 3 digits
+    li  $t9, 100                # $t9 = Number of digits(3), hundred for 3 digits (like ones,tens,hundreds on digits place)
     lui $t0, 0xffff             # load upper immediate
 wait:
     lw      $t1, 0($t0)         # Load Receiver Control to $t1
@@ -19,10 +19,10 @@ wait:
     beqz    $t1, wait           # if LSB is 0, reset wait or if LSB is 1, continnes read a character from I/O device
     lw      $s0, 4($t0)         # Read data from Receiver Data to $s0
 
-    sub     $s0, $s0, 48        # s0 = v0 - 48 to convert from ASCII
-    mul     $s0, $s0, $t9       # Multiply $s0 by the place value factor in $t9
-    div     $t9, $t9, 10        # Divide $t9 to decrease place value factor to the next place
-    add     $s1, $s1, $s0       # Add current digits value to $s1
+    sub     $s0, $s0, 48        # $s0 = $v0 - 48, subtract by 48 to convert from ASCII
+    mul     $s0, $s0, $t9       # $s0 = $s0 * v0, multiply $s0 by the place value factor in $t9
+    div     $t9, $t9, 10        # $t9 = $t9 / 10, divide $t9 by 10 to decrease place value factor to the next place
+    add     $s1, $s1, $s0       # $s1 = $s1 + $s0, add current digits value to $s1
     bnez    $t9, wait           # Polling for next phase
 
 read:
