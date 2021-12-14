@@ -10,12 +10,10 @@
 		.kdata                  # kernel data 
 s1:		.word   10
 s2:		.word   11
-new_line:	.asciiz "\n"    # newline
 
     .text
 	.globl  main
 main:
-
 	li	$s0, 113		# ASCII - Binary Character Table for 'q' (Meaning if you press 'q' the program end)
 
 # Example code to Enable all interrupts
@@ -40,15 +38,10 @@ here:
 	mfc0	$k0, $13			# Cause register 
 	srl		$a0, $k0, 2			# Extract Exception Code Field 
 	andi	$a0, $a0, 0x1f		# Get the exception code 
-	bne		$a0, $zero, kdone	# Exception Code 0 is I/O. Only processing I/O here 
+	bne		$a0, $zero, kdone	# Exception Code 0 is I/O. Only processing I/O here if it isn't 0 
 
 	lui		$v0, 0xFFFF			# $v0 = 0xFFFF0000 and it memory addresss to start on MMIO
 	lw		$a0, 4($v0)			# get the input key
-	lw		$t1, 8($t0)			# load the output control register 
-	andi	$t1, $t1, 0x0001	# reset all bits except (least significant bit)
-
-	sw		$v0, 12($t0)		# output device is ready, so write
-
 	bne		$a0, $s0, print		# branch to print if there more than ASCII code 'q'
 
 	li	$v0, 10			#   print it 
@@ -56,10 +49,6 @@ here:
 
 print:
 	li		$v0, 11				# Code to print it here 
-	syscall
-
-	li		$v0, 4
-	la		$a0, new_line		# $a0 to newline then print result 
 	syscall
 
 kdone:
