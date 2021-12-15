@@ -8,8 +8,8 @@
 #
 
 		.kdata                  # kernel data 
-s1:		.word   10
-s2:		.word   11
+s1:		.word   10				# storage for register $v0
+s2:		.word   11				# storage for register $a0
 
     .text
 	.globl  main
