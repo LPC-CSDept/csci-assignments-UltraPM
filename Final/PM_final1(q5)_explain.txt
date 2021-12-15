@@ -1,0 +1,67 @@
+Phillip Mai 
+December 12, 2021
+FA21-CSCI-21ON1
+Final Exam (Programming Questions)
+(Maybe go maxiumun window to see all the words) 
+
+Describe the outline of your algorithm based on your assembly code
+-explain the details of how it works
+-show the purpose of each register at the pseudo-code level 
+-draw the memory layout if it is required
+-show(draw) the bit representation if you use a certain part of the register
+-explain all about your code 
+-show the test results with the MULTIPLE test data set.
+
+Question 1: Make a MIPS assembly program with Memory Mapped I/O. Take the 3 digits through the MM I/O. Make the real decimal value for the 3 digit input, e.g, if the user type 1, 2, and 3, print 123 (decimal) by using the syscall.
+
+
+To Elaboration the final question 1 program, the user inputs 3 digits and the program print a display of them using the receiver data register and receiver control register. 
+That are both using the Memory-Mapped I/O registers located in Kernel level of memory address 0xffff0000 and 0xffff0004. I make 1 variable to called count as a value of 3
+decimal places as in digits to keep track of the numbers of user input.
+
+In main, I put Load Word the number 100 decimal into $t9 register to set the digits place value of the user input. Since the user will enter 3 digits, it have to be 100 since
+it have 3 digits places like 1 is ones as 1 digit, 10 is tens as 2 digits, and 100 is hundreds as 3 digits. For the MMIO, Memory-Mapped Input/Output, I put it in $t0 for the base address
+and load upper immediate of 0xFFFF.
+
+When the user input the numbers, I use lw(Load Word) into $t1 with 0($t0) that give me Load Receiver Control of 0xFFFF0000. That register is the least significant bit (LSB) and 
+is used to enable interrupt bits on it left. It will be useful later on in the program to prepare for interrupts. The program need to keep waiting until the ready bit is 1, so I 
+used the polling (while-loop structure) in "bnez $t1, wait" means when the LSB ready bit is equal to zero or one then test the andi instruction "andi $t1, $t1, 0x0001" if has 1 in LSB and put it in $t1.
+If the ready bit is 1 then the program accepted the input numbers from the user. After that, "lw $s0, 4($t0)" means it read the input numbers from the user and put it in the low order 8 bit in Load Receiver 
+Control of 0xFFFF0004 and load it in $s0.
+
+After the program got the numbers input from the user, the input numbers have to convert to decimal value by using the ASCII convert method because it in asciiz value which is user input value. To turn asciiz value 
+to decimal value, the value need the subtract by 48 to convert from ASCII. After subtraction, we multiply it by 100 in $t9 and then, divide $t9 by 10 to decrease place value factor to the next place. Lastly, 
+added current digits value to $s1 and finally, get the value to poll as the program do it again in the next input loop.
+
+For example, if the user enter 486 then:
+For 4
+$s0 = 52(asciiz) since in ASCII Table it's equivuent to Digit 4
+$t1 = 100(in program code) 
+sub	$s0, $s0, 48	->	$s0 = $v0 - 48 = 52 - 48 = 4, subtract by 48 to convert from ASCII
+mul	$s0, $s0, $t9	->	$s0 = $s0 * v0 = 4*100 = 400, multiply $s0 by the place value factor in $t9
+div	$t9, $t9, 10	->	$t9 = $t9 / 10 = 400/10 = 40, divide $t9 by 10 to decrease place value factor to the next place
+add	$s1, $s1, $s0	->	$s1 = $s1 + $s0 = 0 + 400 = 400, add current digits value to $s1
+bnez	$t9, wait	->	Polling 4 and do the next one if there is any
+
+For 8
+$s0 = 56(asciiz) since in ASCII Table it's equivuent to Digit 8
+$t1 = 100(in program code) 
+sub	$s0, $s0, 48	->	$s0 = $v0 - 48 = 56 - 48 = 8, subtract by 48 to convert from ASCII
+mul	$s0, $s0, $t9	->	$s0 = $s0 * v0 = 8*100 = 800, multiply $s0 by the place value factor in $t9
+div	$t9, $t9, 10	->	$t9 = $t9 / 10 = 800/10 = 80, divide $t9 by 10 to decrease place value factor to the next place
+add	$s1, $s1, $s0	->	$s1 = $s1 + $s0 = 0 + 800 = 800, add current digits value to $s1
+bnez	$t9, wait	->	Polling 8 and do the next one if there is any
+
+For 6
+$s0 = 54(asciiz) since in ASCII Table it's equivuent to Digit 6
+$t1 = 100(in program code) 
+sub	$s0, $s0, 48	->	$s0 = $v0 - 48 = 54 - 48 = 6, subtract by 48 to convert from ASCII
+mul	$s0, $s0, $t9	->	$s0 = $s0 * v0 = 6*100 = 600, multiply $s0 by the place value factor in $t9
+div	$t9, $t9, 10	->	$t9 = $t9 / 10 = 600/10 = 60, divide $t9 by 10 to decrease place value factor to the next place
+add	$s1, $s1, $s0	->	$s1 = $s1 + $s0 = 0 + 600 = 600, add current digits value to $s1
+bnez	$t9, wait	->	Polling 6 and do the next one if there is any
+
+After the calucations, the program will branch to print with the add instruction "add $a0, $s1, $zero" to copying $t9 to $a0 from $zero
+and move $s1 into $a0 the argument register for syscall and load immediate 1 into $v0 and syscall. Finally, the program print the digit 
+then load immediate 10 into $v0 and syscall to end the program.
+

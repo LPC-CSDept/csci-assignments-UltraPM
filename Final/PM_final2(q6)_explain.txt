@@ -1,0 +1,47 @@
+Phillip Mai 
+December 12, 2021
+FA21-CSCI-21ON1
+Final Exam (Programming Questions)
+(Maybe go maxiumun window to see all the words) 
+
+Describe the outline of your algorithm based on your assembly code
+-explain the details of how it works
+-show the purpose of each register at the pseudo-code level 
+-draw the memory layout if it is required
+-show(draw) the bit representation if you use a certain part of the register
+-explain all about your code 
+-show the test results with the MULTIPLE test data set.
+
+Question 2: Make the assembly program with Interrupted I/O. Take the user character and print it in a console until 'q' is typed. Make the interrupt handler(Kernel text program)
+
+For this program, the user typed alot of letter characters in a console that the program will print it out until the letter 'q' is typed to close the program. 
+The program can do it with the interrupt handler which is a kernel text program. The registers to used are $12 & $13 in the Coprocessor 0 which is a part of the CPU to handle interrupt. 
+Also, there are status register which are registers that contains information about the state of the processor and the cause register that controls the exception type and pending interrupts.
+
+The program begin with the kernel data that storage word values for s1 in $v0 register and s2 in $a0 register. In main, I put Load Immediate the $s0 register to the 
+number 113 because it the ASCII - Binary Character Table value for 'q' to end the program later.
+
+Next, the program need to enable all interrupts with the code "mfc0 $a0, $12" to access the Status Register and store it in $a0 by move the bit pattern of $12 to $a0.
+The next step is the code to enable all interrupts for the user to type. To do it, I changed the code of the interrupt enable bit in the Receiver Control Register to get 
+the user input. I put "lui $t0, 0xffff" to get 16 bits and I use "ori $a0, $0, 2"  to create the bit pattern that transfer into the Receiver Control Register to enable keyboard interrupt.
+Then, store it into Receiver Control, 0xFFFF0000, with "sw $a0, 0($t0)" to enable interrupts
+
+Afterwords, I need to make a infinite loop for the user to type alot of words until the user enter 'q'  to stop. I simply use "here: j here" to create an infinite loop.
+
+The next section of the code is setting the kernel code texting. Kernel is a computer program that is the core of a computer's operating system, with complete control over everything in the system.
+I put ".ktext 0x80000180" to start the code and 0x80000180 is the MIPS exception vector.
+
+After the enabling the interruption with exception type codes are done, the program need to know about the exception type so I stored s1 = 10 into $v0 and s2 = 10 into $a0 to store the 
+register to reset our values for interruptions later on. I need to do that because interrupt are tricky as they may be triggered by a memory reference and using a bad value of the stack pointer that 
+mess up the correct value.
+
+After storing, I use "mfc0 $k0, $13" to access cause register that move the bit pattern of the cause register to a kernel register that will extract the exception code of 2 to 8 bit of the register. 
+The extraction feild with the code "srl $a0, $k0, 2" will by shift right by  two times and move it the the right bit. There with the andi instruction code "andi $a0, $a0, 0x1f" we will get the execute code. 
+With the reset segment in my program, if the exception is 0, then the program will only prccess the I/O. Also, if not then the program will restore other registers, clear out the cause and status registers, and again enable all the interrupts.
+
+I reset the registers of "lw $v0, $s1" that $v0 register and "lw $v0, $s2" that $a0 register. I move $0 into $13 as the code stated "mtc0 $0, $13" to clear out the cause registers. 
+I have set the status register in the exception code with $k0 in "mfc0 $k0, $12". Then re-enable the interrupt with "ori $k0, 0x11" and go back to the status register with "mtc0 $k0, $12".
+Finally, when the program is running and it hit an interrupt/exception happens, the address of the current executing instruction is copied form the processor to the  the Exception Program Counter(EPC) register. 
+Also, the loop will return back before the interrupt happens with the eret code.
+
+Lastly, the program print segment will simply print the characters/letters the user input by user syscall code "li $v0, 11" and stop if the letter 'q' that has decimal 113. Then the program stop completely.
