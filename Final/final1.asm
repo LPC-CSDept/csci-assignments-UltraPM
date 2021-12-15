@@ -12,7 +12,7 @@
 
 main:
     li  $t9, 100                # $t9 = Number of digits(3), hundred for 3 digits (like ones,tens,hundreds on digits place)
-    lui $t0, 0xffff             # load upper immediate
+    lui $t0, 0xffff             # load upper immediate, $t0 = base address of MMIO
 wait:
     lw      $t1, 0($t0)         # Load Receiver Control to $t1
     andi    $t1, $t1, 0x0001    # test the Receiver control register has 1 in LSB (ready bit)
